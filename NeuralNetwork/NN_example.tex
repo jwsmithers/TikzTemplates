@@ -1,0 +1,130 @@
+\documentclass[border=2mm]{standalone}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+
+\begin{document}
+\pagestyle{empty}
+
+\def\layersep{5cm}
+
+\def\inputsDL{1}
+\def\inputsBoth{6}
+\def\inputsSL{9}
+
+\def\firsthidden{30}
+\def\secondhidden{20}
+
+\def\offset{+0.75}
+
+
+\def\DLVariables{{"empty","$m(l,l)$"}}%
+\def\BothVariables{{"empty","\#~b-tagged jets","$E_{T}^{miss}$","$p_{T}~ 1^{st}$ jet","$p_{T}~ 2^{nd}$ jet","$1^{st}$ b-tag weight","$2^{nd}$ b-tag weight"}}%
+\def\SLVariables{{"empty","PPT","$H_{T}$","\#~of jets","$m_{T}(W)$","$p_{T}~ 3^{rd}$ jet","$p_{T}~ 4^{th}$ jet","$p_{T}~ 5^{th}$ jet","$3^{rd}$ b-tag weight","$m(\gamma,l)$"}}%
+
+
+
+\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep]
+    \tikzstyle{every node}=[font=\huge]
+    \tikzstyle{every pin edge}=[<-,shorten <=1pt]
+    \tikzstyle{neuron}=[circle,fill=black!25,minimum size=25pt,inner sep=0pt]
+    
+    \tikzstyle{batchNorm}=[rectangle,minimum height=1.5cm,minimum width=10cm,fill=Dandelion,inner sep=0pt],draw]
+
+    \tikzstyle{input neuronDL}=[neuron, fill=Red];
+    \tikzstyle{input neuronBoth}=[neuron, fill=Orange];
+    \tikzstyle{input neuronSL}=[neuron, fill=Goldenrod];
+
+    \tikzstyle{output neuron}=[neuron, fill=ForestGreen];
+    \tikzstyle{hidden neuron}=[neuron, fill=Cerulean];
+
+    % Draw the input layer nodes
+    \foreach \name / \y in {1,...,\inputsDL}    
+        \node[input neuronDL, pin=left: \pgfmathparse{\DLVariables[\y]}\pgfmathresult   ] (I-\name) at (-3,-\y-\offset+1) {};
+     \foreach \name / \y in {1,...,\inputsBoth}
+        \node[input neuronBoth, pin=left: \pgfmathparse{\BothVariables[\y]}\pgfmathresult ] (I2-\name) at (-3,-\y-\inputsDL-\offset) {};
+     \foreach \name / \y in {1,...,\inputsSL}
+        \node[input neuronSL, pin=left: \pgfmathparse{\SLVariables[\y]}\pgfmathresult ] (I3-\name) at (-3,-\y-\inputsBoth-\inputsDL-\offset-1) {};
+
+    % Draw the hidden layer nodes
+    \foreach \name / \y in {1,...,\firsthidden}
+        \path[yshift=6.5cm]
+            node[hidden neuron] (H-\name) at (\layersep,-\y cm) {};
+       
+       
+      % Draw a batch norm
+        \path[yshift=1.5cm]
+            node[batchNorm,rotate=90] (B1) at (2*\layersep,-10.5 cm) {Dropout (30\%)};
+ 
+        
+      % Draw a dropout 
+        \path[yshift=1.5cm]
+            node[batchNorm,rotate=90] (D1) at (2.5*\layersep,-10.5 cm) {Batch normalisation};
+                                 
+          
+     % Draw the 2nd hidden layer nodes
+    \foreach \name / \y in {1,...,\secondhidden}
+        \path[yshift=1.5cm]
+            node[hidden neuron] (H2-\name) at (3.5*\layersep,-\y cm) {};
+            
+            
+    % Draw the output layer node
+    \node[output neuron,pin={[pin edge={->}]right:Output}] (O) at (4.5*\layersep,-9 cm) {};
+
+    % Connect every node in the input layer with every node in the
+    % first hidden layer.
+    \foreach \source in {1,...,\inputsDL}
+        \foreach \dest in {1,...,\firsthidden}
+            \path (I-\source) edge (H-\dest);
+    \foreach \source in {1,...,\inputsBoth}
+        \foreach \dest in {1,...,\firsthidden}
+            \path (I2-\source) edge (H-\dest);
+    \foreach \source in {1,...,\inputsSL}
+        \foreach \dest in {1,...,\firsthidden}
+            \path (I3-\source) edge (H-\dest);
+  
+    % Connect every node in the first hidden layer with every node in the
+    % B1 hidden layer.
+    \foreach \source in {1,...,\firsthidden}
+        \foreach \dest in {1,...,\secondhidden}
+            \path (H-\source) edge (B1);
+            
+    % Connect every node in the B1 layer with every node in the
+    % dropout layer hidden layer.
+    \foreach \source in {1,...,15}
+        \draw ([yshift=-20*\source]B1) -- ([yshift=-20*\source]D1);
+  
+    \foreach \source in {1,...,15}
+        \draw ([yshift=20*\source]B1) -- ([yshift=20*\source]D1);
+
+   % Connect every node in the D1 layer with every node second dense
+    \foreach \source in {1,...,\secondhidden}
+        \path (D1) edge (H2-\source);
+  
+ % Connect every node in the second layer with every node in the
+    % output.          
+    \foreach \source in {1,...,\secondhidden}
+        \path (H2-\source) edge (O);
+
+    % Annotate the input layers
+    \node[input neuronDL,above of=I-1,xshift=-9cm] (DLI) {};
+    \node[right] at (DLI.east) {= Dilepton input variable};    
+    \node[input neuronBoth,below of=DLI, yshift=4cm] (SLDLI) {};
+    \node[right] at (SLDLI.east)  {= Single lepton and dilepton input variables};
+    \node[input neuronSL,below of= SLDLI, yshift=4cm] (SLI) {};
+    \node[right] at (SLI.east) {= Single lepton input variables};
+
+    % Annotate first hidden layer
+    \node[hidden neuron,right of=H-3] (H1) {};
+    \node[right] at (H1.east) (H1-label) {= Hidden layers};    
+    \node[below,yshift=-0.7cm] at (H1-label) {ReLu: $R(x)=max(0,x)$};    
+
+    % Annotate Output layer
+    \node[output neuron,right of=H2-4, xshift=-1.5cm] (H2) {};
+    \node[right] at (H2.east) (H2-label) {= Output layer};    
+    \node[below,yshift=-0.7cm] at (H2-label) {Sigmoid: $S(x)=\frac{e^{x}}{e^x+1}$};    
+
+
+\end{tikzpicture}
+% End of code
+\end{document}

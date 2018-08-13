@@ -1,0 +1,170 @@
+\documentclass[10pt,border=10pt,tikz]{standalone}
+\usepackage{tikz,tkz-euclide,pdftexcmds}
+\usetikzlibrary{backgrounds}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+\usetkzobj{all}
+\usepackage{amsmath}
+\usepackage{graphicx}            
+\usepackage{amssymb}
+\usetikzlibrary{shapes,snakes}
+
+\makeatletter
+
+\pgfdeclareradialshading[tikz@ball]{my ball}{\pgfqpoint{5bp}{10bp}}{%
+ color(0bp)=(tikz@ball!10!white);
+ color(8bp)=(tikz@ball!65!white);
+ color(12bp)=(tikz@ball);
+ color(25bp)=(tikz@ball!70!black);
+ color(50bp)=(black)}
+
+\pgfdeclareradialshading[tikz@ball]{new ball}{\pgfqpoint{12bp}{12bp}}{%
+ color(0cm)=(tikz@ball!10!white);
+ color(0.5cm)=(tikz@ball!50!white);
+ color(0.75cm)=(tikz@ball);
+ color(0.9cm)=(tikz@ball!80!black);
+ color(1cm)=(tikz@ball!60!black)} 
+
+\pgfdeclareradialshading{ball shadow}{\pgfpointorigin}%
+{color(0cm)=(black);
+color(2mm)=(gray!100);
+color(3mm)=(gray!70);
+color(7mm)=(white)
+} 
+
+ % to make possible use "myball color=..." 
+\tikzoption{my ball color}{\pgfutil@colorlet{tikz@ball}{#1}\def\tikz@shading{my ball}\tikz@addmode{\tikz@mode@shadetrue}}
+\tikzoption{new ball color}{\pgfutil@colorlet{tikz@ball}{#1}\def\tikz@shading{new ball}\tikz@addmode{\tikz@mode@shadetrue}}
+\tikzoption{ball shadow color}{\pgfutil@colorlet{tikz@ball}{#1}\def\tikz@shading{ball shadow}\tikz@addmode{\tikz@mode@shadetrue}}
+
+% Can't remember where I got this function otherwise I'd link to it
+\newcommand{\ball}[8][white]{%
+        \begin{scope}[shift = {(#2,#3)}]
+        \begin{scope}[on background layer]
+        		  \node[shading=ball shadow,xscale=2,yscale=0.3,circle,minimum size=7mm] 
+            	  at (0.15,-0.225){};
+         \end{scope}
+          % Special shading for white
+          \ifnum\pdf@strcmp{#1}{white}=\z@%  
+            \shade[my ball color=#1] (0.15,0.25) circle (0.5);
+          \else
+            \shade[new ball color=#1] (0.15,0.25) circle (0.5);
+          \fi
+        \end{scope}
+        
+        \draw (#2+0.15,#3+0.2) node[fill=none] (#8) {\textbf{\Large{#4}}};  % flavour
+	\draw (#2+0.15,#3+0.55) node[fill=none] {\scalebox{0.4}{#5}};	% mass
+	\draw (#2-0.15,#3+0.2) node[fill=none] {\scalebox{0.4}{#6}};	% charge
+	\draw (#2+0.48,#3+0.20) node[fill=none] {\scalebox{0.4}{#7}};	% spin
+}
+
+\makeatother
+
+\begin{document}
+
+\begin{tikzpicture}     
+% Declare 2 boxes since i'm lazy and don't wont to look up how to provide an argument
+    \tikzset{
+        smallboundingbox/.style={rectangle,rounded corners,draw=black, fill=none, thick, inner sep=1em,minimum width=6.5em,minimum height=3.3em, text centered},
+        myarrow/.style={->, >=latex', shorten >=1pt, thick},
+        mylabel/.style={text width=7em, text centered} 
+    }  
+    \tikzset{
+        boundingbox/.style={rectangle,rounded corners,draw=black, fill=none, thick, inner sep=1em,minimum width=14em,minimum height=5.9em, text centered},
+        myarrow/.style={->, >=latex', shorten >=1pt, thick},
+        mylabel/.style={text width=7em, text centered} 
+    }  
+
+% labels:
+    \node[draw,draw=none,text=gray, rotate=90] at (-0.7,-0.2) {Quarks};
+    \node[draw,draw=none,text=gray, rotate=90] at (-0.7,-2) {Mediators};
+    \node[draw,draw=none,text=gray, rotate=90] at (-0.7,-4) {Leptons};
+    \node[draw,draw=none, text=gray] at (1,1) {I};
+    \node[draw,draw=none,text=gray] at (2.5,1) {II};
+    \node[draw,draw=none,text=gray] at (4,1) {III};
+
+    % Example:
+    %\ball[color]{x}{y}{label}{mass}{charge}{spin}{labelforpath}%u
+
+% Quarks
+    \ball[orange]{0.5}{0}{$u$}{$\sim2 \, \mathrm{MeV}$}{$2/3$}{$1/2$}{u}%u
+    \ball[orange]{1}{-0.9}{$d$}{$\sim2 \, \mathrm{MeV}$}{$-1/3$}{$1/2$}{d} %u
+
+    \ball[orange]{2}{0}{$c$}{$\sim1.3 \, \mathrm{GeV}$}{$2/3$}{$1/2$}{c} %c
+    \ball[orange]{2.5}{-0.9}{$s$}{$\sim100 \, \mathrm{MeV}$}{$-1/3$}{$1/2$}{s}  %s
+
+    \ball[orange]{3.5}{0}{$t$}{$173.5 \, \mathrm{GeV}$}{$2/3$}{$1/2$}{t} %t
+    \ball[orange]{4}{-0.9}{$b$}{$\sim4.2 \, \mathrm{GeV}$}{$-1/3$}{$1/2$}{b}  %b
+   
+     \node[boundingbox] at (2.4,-0.2) (quarkbox)  {};
+     
+% gauge bosons
+    \ball[white]{0.5}{-2.3}{$g$}{$0$}{$0$}{$1$}{g} %g
+    \ball[white]{1.8}{-2.3}{\small{$Z$}}{$90.4 \, \mathrm{GeV}$}{$0$}{$1$}{Z} %Z
+    \ball[white]{2.9}{-2.3}{\small{$W$}}{$80.4 \, \mathrm{GeV}$}{$\pm1$}{$1$}{W}  %W
+ 
+    \node[smallboundingbox] at (2.5,-2.05) (bosonbox)  {};
+    
+    \ball[white]{4.6}{-2.3}{{\small $H$}}{$125 \, \mathrm{GeV}$}{$0$}{$0$}{H} %H
+    \ball[white]{5.8}{-2.3}{$\gamma$}{$0$}{$0$}{$1$}{gamma}  %gamma
+
+
+% Leptons    
+    \ball[purple!60]{0.5}{-3.7}{$\nu_e$}{$\gtrsim0$}{$0$}{$1/2$}{nue}  %nu_e
+    \ball[purple!60]{1}{-4.6}{$e$}{$0.5 \, \mathrm{MeV}$}{$-1$}{$1/2$}{e} %e
+    
+    \ball[purple!60]{2}{-3.7}{$\nu_{\mu}$}{$\gtrsim0$}{$0$}{$1/2$}{numu}  %nu_mu
+    \ball[purple!60]{2.5}{-4.6}{$\mu$}{$105 \, \mathrm{MeV}$}{$-1$}{$1/2$}{mu} %mu
+
+    \ball[purple!60]{3.5}{-3.7}{$\nu_{\tau}$}{$\gtrsim0$}{$0$}{$1/2$}{nutau} %nu_tau
+    \ball[purple!60]{4}{-4.6}{$\tau$}{$1.78 \, \mathrm{GeV}$}{$-1$}{$1/2$}{tau} %tau
+
+    \node[boundingbox] at (2.4,-3.9) (leptonbox)  {};
+
+    \node[draw,draw=none, text=gray] at (1,-5.1) {I};
+    \node[draw,draw=none,text=gray] at (2.5,-5.1) {II};
+    \node[draw,draw=none,text=gray] at (4,-5.1) {III};
+
+
+% legend
+    
+    \ball[blue!20]{5.8}{-0.5}{\small{$X$}}{\small{$mass$}}{\small{$charge$}}{\small{$spin$}}{legend}
+
+% paths 
+    \begin{scope}[on background layer]
+    \draw (g) to[bend left=20] node {} (quarkbox);
+   
+% gamma to all
+    \draw  (gamma) to[bend left] node {} (e);
+    \draw  (gamma) to[bend left] node {} (mu);
+    \draw  (gamma) to[bend left] node {} (tau);
+
+    \draw  (gamma) to[bend right=10] node {} (quarkbox);
+
+% Higgs to all
+    \draw (H) to[bend left=60] node {} (e);
+    \draw (H) to[bend left=50] node {} (mu);
+    \draw (H) to[bend left=20] node {} (tau);
+    
+    \draw  (H) to[bend right] node {} (quarkbox);
+    \draw  (H) to[bend left] node {} (bosonbox);
+
+%W to photon
+    \draw (W) to[bend left=40] node {} (gamma);
+%Bosons to leptons
+    \draw  (bosonbox) to[bend left=10] node {} (leptonbox);
+    \draw  (bosonbox) to[bend left=10] node {} (quarkbox);
+
+% Self couplings
+    \draw (bosonbox) to [out=145,in=165,looseness=4] (bosonbox);
+    \draw (H) to [out=150,in=180,looseness=15] (H);
+    \draw  (g) to [out=150,in=180,looseness=20] (g);
+
+    \end{scope}
+
+
+\end{tikzpicture}
+\end{document}
+
+
+
