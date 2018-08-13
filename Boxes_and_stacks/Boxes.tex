@@ -1,0 +1,46 @@
+\documentclass[border=2mm]{standalone}
+\usepackage{tikz}
+\usepackage{cancel}
+
+\newcommand{\drawbox}[5]{
+    \pgfmathsetmacro \angle {30}
+    \pgfmathsetmacro \xd {{2/3*cos(\angle)}}
+    \pgfmathsetmacro \yd {{2/3*sin(\angle)}}
+    \pgfmathsetmacro \x {{#1-1+(#2-1)*(\xd)}}
+    \pgfmathsetmacro \y {{#3-1+(#2-1)*(\yd)}}
+
+    \draw[fill=#4] (\x,\y) -- (\x+1,\y) -- (\x+1,\y+1) -- (\x,\y+1) -- cycle;
+    \draw[fill=#4] (\x,\y+1) -- (\x+\xd,\y+1+\yd) -- (\x+1+\xd,\y+1+\yd) -- (\x+1,\y+1) -- cycle;
+    \draw[fill=#4] (\x+1,\y+1) -- (\x+1+\xd,\y+1+\yd) -- (\x+1+\xd,\y+\yd) -- (\x+1,\y) -- cycle;
+    \node[fill=#4] at (\x+0.5,\y+0.5) {#5};
+
+}
+
+\begin{document}
+
+\begin{tikzpicture}
+
+    \drawbox{1}{1}{1}{orange!70}{}
+    \drawbox{1}{0}{1}{orange!70}{\tiny{$PPT$}}
+  
+    \drawbox{2}{1}{1}{orange!70}{}
+    \drawbox{2}{0}{1}{orange!70}{\tiny{$H_{T}$}}
+
+     \drawbox{3}{0}{1}{orange!70}{\tiny{$E_{T}^{miss}$}}
+
+     \drawbox{4}{0}{1}{orange!70}{\tiny{$m_{T}W$}}
+
+     \drawbox{5}{0}{1}{orange!70}{\tiny{$bjets$}}
+
+    \drawbox{6}{3}{1}{orange!70}{}
+    \drawbox{6}{2}{1}{orange!70}{}
+    \drawbox{6}{1}{1}{orange!70}{}
+     \drawbox{6}{0}{1}{orange!70}{\tiny{$jets$}}
+
+    \drawbox{7}{1}{1}{orange!70}{}
+     \drawbox{7}{0}{1}{orange!70}{\tiny{$jet_{p_{T}}$}}
+
+     \drawbox{8}{0}{1}{orange!70}{...}
+
+\end{tikzpicture}
+\end{document}

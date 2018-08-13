@@ -14,6 +14,16 @@ A random collection of tikz examples I've collected over the ages.
 
 ![alt text](NeuralNetwork/NN_example.png)
 
+* Boxes_and_stacks
+
+Two examples:
+
+![alt text](Boxes_and_stacks/Boxes_padded.png)
+![alt text](Boxes_and_stacks/Boxes_vertical2.png)
+
+
+
+
 
 ## Contributing
 
