@@ -6,10 +6,12 @@ A random collection of tikz examples I've collected over the ages.
 ## What's in the box?
 
 * StandardModelBalls
+
 ![alt text](StandardModelBalls/Standard_model_balls_with_interactions.png)
 
 
 * NeuralNetwork
+
 ![alt text](NeuralNetwork/NN_example.png)
 
 
