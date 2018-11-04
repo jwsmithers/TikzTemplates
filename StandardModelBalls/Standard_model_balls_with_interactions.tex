@@ -87,14 +87,14 @@ color(7mm)=(white)
     %\ball[color]{x}{y}{label}{mass}{charge}{spin}{labelforpath}%u
 
 % Quarks
-    \ball[orange]{0.5}{0}{$u$}{$\sim2.2 \, \mathrm{MeV}$}{$2/3$}{$1/2$}{u}%u
-    \ball[orange]{1}{-0.9}{$d$}{$\sim4.7 \, \mathrm{MeV}$}{$-1/3$}{$1/2$}{d} %d
+    \ball[orange]{0.5}{0}{$u$}{$2.2 \, \mathrm{MeV}$}{$2/3$}{$1/2$}{u}%u
+    \ball[orange]{1}{-0.9}{$d$}{$4.7 \, \mathrm{MeV}$}{$-1/3$}{$1/2$}{d} %d
 
-    \ball[orange]{2}{0}{$c$}{$\sim1.3 \, \mathrm{GeV}$}{$2/3$}{$1/2$}{c} %c
-    \ball[orange]{2.5}{-0.9}{$s$}{$\sim100 \, \mathrm{MeV}$}{$-1/3$}{$1/2$}{s}  %s
+    \ball[orange]{2}{0}{$c$}{$1.3 \, \mathrm{GeV}$}{$2/3$}{$1/2$}{c} %c
+    \ball[orange]{2.5}{-0.9}{$s$}{$100 \, \mathrm{MeV}$}{$-1/3$}{$1/2$}{s}  %s
 
     \ball[orange]{3.5}{0}{$t$}{$173 \, \mathrm{GeV}$}{$2/3$}{$1/2$}{t} %t
-    \ball[orange]{4}{-0.9}{$b$}{$\sim4.2 \, \mathrm{GeV}$}{$-1/3$}{$1/2$}{b}  %b
+    \ball[orange]{4}{-0.9}{$b$}{$4.2 \, \mathrm{GeV}$}{$-1/3$}{$1/2$}{b}  %b
    
      \node[boundingbox] at (2.4,-0.2) (quarkbox)  {};
      
@@ -128,7 +128,8 @@ color(7mm)=(white)
 
 % legend
     
-    \ball[blue!20]{5.8}{-0.5}{\small{$X$}}{\small{$mass$}}{\small{$charge$}}{\small{$spin$}}{legend}
+    \ball[blue!20]{5.8}{-0.5}{\small{$X$}}{\small{$\approx mass$}}{\small{$charge$}}{\small{$spin$}}{legend}
+    \node[draw,draw=none,text=gray] at (5.95,0.38) {\tiny{Legend}};
 
 % paths 
     \begin{scope}[on background layer]
